@@ -28,12 +28,15 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id', ParseMongoIdPipe) id: string) {
-    return this.userService.findOne(id);
+    return this.userService.findById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')

@@ -32,18 +32,17 @@ export class UserService {
     }
   }
 
-  async findOne(id: string) {
+  async findById(id: string) {
     const user = await this.userModel.findById(id);
     if (!user) throw new BadRequestException(`User with id "${id}" not found`);
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    try {
-      return `This action updates a #${id} user`;
-    } catch (error) {
-      throw new Error(error);
-    }
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findById(id);
+    await user.updateOne(updateUserDto);
+
+    return { ...user.toJSON(), ...updateUserDto };
   }
 
   async remove(id: string) {
