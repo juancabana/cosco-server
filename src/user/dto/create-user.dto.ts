@@ -5,6 +5,7 @@ import {
   IsEmail,
   Matches,
   IsOptional,
+  IsUrl,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -28,6 +29,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
+  @IsUrl()
   image: string;
 
   @IsString()
