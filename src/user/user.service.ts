@@ -8,12 +8,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Model } from 'mongoose';
 import { User } from './entities/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -51,6 +53,13 @@ export class UserService {
       throw new BadRequestException(`User with id "${id}" not found`);
 
     return 'User Deleted';
+  }
+
+  async uploadFile(id: string, file: Express.Multer.File) {
+    const image = await this.cloudinaryService.uploadFile(file);
+    const newUser = await this.update(id, { image: image.secure_url });
+
+    return newUser;
   }
 
   private handleExceptions(error: any) {
