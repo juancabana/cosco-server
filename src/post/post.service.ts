@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
@@ -13,6 +17,11 @@ export class PostService {
   ) {}
 
   async create(id: string, createPostDto: CreatePostDto) {
+    const user = await this.postModel.findById(id);
+    if (!user)
+      throw new BadRequestException(
+        `You cannot associate the post to a user that does not exist`,
+      );
     return await this.postModel.create({ owner: id, ...createPostDto });
   }
 
@@ -40,5 +49,16 @@ export class PostService {
     //   throw new BadRequestException(`Post with id "${id}" not found`);
     // }
     return res;
+  }
+  private handleExceptions(error: any) {
+    if (error.code === 11000) {
+      throw new BadRequestException(
+        `User exists in db ${JSON.stringify(error.keyValue)}`,
+      );
+    }
+    console.log(error);
+    throw new InternalServerErrorException(
+      `Can't create User - Check server logs`,
+    );
   }
 }

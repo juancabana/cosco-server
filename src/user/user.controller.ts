@@ -65,7 +65,7 @@ export class UserController {
     @Param('id', ParseMongoIdPipe) id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    // console.log({ fileInController: file });
+    console.log({ fileInController: file });
     if (!file) {
       throw new BadRequestException('Make sure that the file is an image');
     }
