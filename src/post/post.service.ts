@@ -11,6 +11,7 @@ import { Post } from './entities/post.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/user/user.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class PostService {
@@ -19,15 +20,29 @@ export class PostService {
     private readonly postModel: Model<Post>,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
+    private readonly CloudinaryService: CloudinaryService,
   ) {}
 
-  async create(id: string, createPostDto: CreatePostDto) {
-    const user = await this.userService.findById(id);
-    if (!user)
-      throw new BadRequestException(
-        `You cannot associate the post to a user that does not exist`,
-      );
-    return await this.postModel.create({ owner: id, ...createPostDto });
+  async create(
+    id: string,
+    file: Express.Multer.File,
+    createPostDto: CreatePostDto,
+  ) {
+    try {
+      const user = await this.userService.findById(id);
+      if (!user)
+        throw new BadRequestException(
+          `You cannot associate the post to a user that does not exist`,
+        );
+      const { secure_url } = await this.CloudinaryService.uploadFile(file);
+      return await this.postModel.create({
+        owner: id,
+        ...createPostDto,
+        image: secure_url,
+      });
+    } catch (error) {
+      this.handleExceptions(error);
+    }
   }
 
   async findAll() {
@@ -69,7 +84,7 @@ export class PostService {
   private handleExceptions(error: any) {
     if (error.code === 11000) {
       throw new BadRequestException(
-        `User exists in db ${JSON.stringify(error.keyValue)}`,
+        `Post exists in db ${JSON.stringify(error.keyValue)}`,
       );
     }
     console.log(error);

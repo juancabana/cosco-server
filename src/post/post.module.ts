@@ -4,6 +4,7 @@ import { PostController } from './post.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from './entities/post.entity';
 import { UserModule } from 'src/user/user.module';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   controllers: [PostController],
@@ -16,6 +17,7 @@ import { UserModule } from 'src/user/user.module';
       },
     ]),
     forwardRef(() => UserModule),
+    CloudinaryModule,
   ],
   exports: [PostService],
 })

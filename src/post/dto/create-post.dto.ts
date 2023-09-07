@@ -1,7 +1,7 @@
+import { Type } from 'class-transformer';
 import {
   IsAlpha,
   IsDate,
-  IsMongoId,
   IsNumber,
   IsOptional,
   IsString,
@@ -24,6 +24,7 @@ export class CreatePostDto {
   @IsAlpha()
   city: string;
 
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   stock: number;
@@ -32,6 +33,7 @@ export class CreatePostDto {
   @IsAlpha()
   massUnit: string;
 
+  @Type(() => Number)
   @IsNumber()
   price: number;
 
@@ -45,4 +47,6 @@ export class CreatePostDto {
 
   @IsString()
   description: string;
+
+  image: any;
 }
