@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { FavoritesController } from './favorites.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -16,8 +16,9 @@ import { PostModule } from 'src/post/post.module';
         schema: FavoriteSchema,
       },
     ]),
-    UserModule,
+    forwardRef(() => UserModule),
     PostModule,
   ],
+  exports: [FavoritesService],
 })
 export class FavoritesModule {}

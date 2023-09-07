@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -11,6 +13,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PostService } from 'src/post/post.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()
 export class UserService {
@@ -20,6 +23,8 @@ export class UserService {
     private readonly cloudinaryService: CloudinaryService,
     private readonly postService: PostService,
     private readonly notificationsSevice: NotificationsService,
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoriteService: FavoritesService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -57,6 +62,7 @@ export class UserService {
       throw new BadRequestException(`User with id "${id}" not found`);
     }
     await this.postService.removeMany(id);
+    await this.favoriteService.removeAllUserFavorites(id);
     await this.notificationsSevice.removeUserNotifications(id);
 
     return 'User Deleted';

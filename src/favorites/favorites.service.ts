@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -15,6 +17,7 @@ export class FavoritesService {
   constructor(
     @InjectModel(Favorite.name)
     private readonly favoriteModel: Model<Favorite>,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly postService: PostService,
   ) {}
@@ -48,6 +51,10 @@ export class FavoritesService {
     if (!user) throw new BadRequestException(`User with id "${id}" not found`);
 
     const favorites = await this.favoriteModel.find({ idUser: id });
+    return favorites;
+  }
+  async removeAllUserFavorites(id: string) {
+    const favorites = await this.favoriteModel.deleteMany({ idUser: id });
     return favorites;
   }
 

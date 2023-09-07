@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { PostModule } from 'src/post/post.module';
 import { NotificationsModule } from 'src/notifications/notifications.module';
+import { FavoritesModule } from 'src/favorites/favorites.module';
 
 @Module({
   controllers: [UserController],
@@ -20,6 +21,7 @@ import { NotificationsModule } from 'src/notifications/notifications.module';
     CloudinaryModule,
     forwardRef(() => PostModule),
     forwardRef(() => NotificationsModule),
+    FavoritesModule,
   ],
   exports: [UserService],
 })
