@@ -76,6 +76,7 @@ export class PostService {
     }
     return 'Post deleted';
   }
+
   async removeMany(id: string) {
     const res = await this.postModel.deleteMany({ owner: id });
 
@@ -89,7 +90,7 @@ export class PostService {
     }
     console.log(error);
     throw new InternalServerErrorException(
-      `Can't create User - Check server logs`,
+      `Can't create Post - Check server logs`,
     );
   }
 }

@@ -8,6 +8,7 @@ import { PostModule } from './post/post.module';
 // Mongo
 import { MongooseModule } from '@nestjs/mongoose';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     CloudinaryModule,
     UserModule,
     PostModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
