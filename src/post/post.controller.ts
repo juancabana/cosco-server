@@ -17,7 +17,10 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post(':id')
-  create(@Param('id') id: string, @Body() createPostDto: CreatePostDto) {
+  create(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @Body() createPostDto: CreatePostDto,
+  ) {
     return this.postService.create(id, createPostDto);
   }
 
@@ -27,13 +30,16 @@ export class PostController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  findOne(@Param('id', ParseMongoIdPipe) id: string) {
+    return this.postService.findByID(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(+id, updatePostDto);
+  update(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    return this.postService.update(id, updatePostDto);
   }
 
   @Delete(':id')

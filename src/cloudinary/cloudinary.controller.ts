@@ -22,7 +22,6 @@ export class CloudinaryController {
     }),
   )
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
-    // console.log({ fileInController: file });
     if (!file) {
       throw new BadRequestException('Make sure that the file is an image');
     }

@@ -4,7 +4,6 @@ import { UserController } from './user.controller';
 import { User, UserSchema } from './entities/user.entity';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
-import { PostService } from 'src/post/post.service';
 import { PostModule } from 'src/post/post.module';
 
 @Module({
@@ -20,5 +19,6 @@ import { PostModule } from 'src/post/post.module';
     CloudinaryModule,
     PostModule,
   ],
+  exports: [UserService],
 })
 export class UserModule {}

@@ -1,23 +1,28 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
+  forwardRef,
 } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectModel(Post.name)
     private readonly postModel: Model<Post>,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
   ) {}
 
   async create(id: string, createPostDto: CreatePostDto) {
-    const user = await this.postModel.findById(id);
+    const user = await this.userService.findById(id);
     if (!user)
       throw new BadRequestException(
         `You cannot associate the post to a user that does not exist`,
@@ -29,12 +34,24 @@ export class PostService {
     return await this.postModel.find();
   }
 
+  async findByID(id: string) {
+    const post = await this.postModel.findById(id);
+    if (!post) throw new BadRequestException(`Post with id "${id}" not found`);
+    return post;
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} post`;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: string, updatePostDto: UpdatePostDto) {
+    try {
+      const post = await this.findByID(id);
+      post.updateOne(post);
+      return { ...post.toJSON(), ...updatePostDto };
+    } catch (error) {
+      this.handleExceptions(error);
+    }
   }
 
   async remove(id: string) {
@@ -42,12 +59,11 @@ export class PostService {
     if (deletedCount === 0) {
       throw new BadRequestException(`Post with id "${id}" not found`);
     }
+    return 'Post deleted';
   }
   async removeMany(id: string) {
     const res = await this.postModel.deleteMany({ owner: id });
-    // if (deletedCount === 0) {
-    //   throw new BadRequestException(`Post with id "${id}" not found`);
-    // }
+
     return res;
   }
   private handleExceptions(error: any) {
