@@ -23,6 +23,11 @@ export class NotificationsController {
     return await this.notificationsService.findAll();
   }
 
+  @Get('user/:id')
+  findUserNotifications(@Param('id', ParseMongoIdPipe) id: string) {
+    return this.notificationsService.findAllUserNotifications(id);
+  }
+
   @Delete(':id')
   remove(@Param('id', ParseMongoIdPipe) id: string) {
     return this.notificationsService.remove(id);

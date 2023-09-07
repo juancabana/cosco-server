@@ -44,6 +44,11 @@ export class PostController {
     return await this.postService.findAll();
   }
 
+  @Get('user/:id')
+  findUserPosts(@Param('id', ParseMongoIdPipe) id: string) {
+    return this.postService.findAllUserPosts(id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseMongoIdPipe) id: string) {
     return this.postService.findByID(id);

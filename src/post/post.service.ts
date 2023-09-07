@@ -64,6 +64,14 @@ export class PostService {
     return post;
   }
 
+  async findAllUserPosts(id: string) {
+    const user = await this.userService.findById(id);
+    if (!user) throw new BadRequestException(`User with id "${id}" not found`);
+
+    const post = await this.postModel.find({ owner: id });
+    return post;
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} post`;
   }

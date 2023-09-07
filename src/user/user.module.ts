@@ -19,7 +19,7 @@ import { NotificationsModule } from 'src/notifications/notifications.module';
     ]),
     CloudinaryModule,
     forwardRef(() => PostModule),
-    NotificationsModule,
+    forwardRef(() => NotificationsModule),
   ],
   exports: [UserService],
 })
