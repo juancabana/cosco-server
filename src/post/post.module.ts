@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from './entities/post.entity';
 import { UserModule } from 'src/user/user.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
   controllers: [PostController],
@@ -16,8 +17,9 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
         schema: PostSchema,
       },
     ]),
-    forwardRef(() => UserModule),
     CloudinaryModule,
+    forwardRef(() => UserModule),
+    forwardRef(() => NotificationsModule),
   ],
   exports: [PostService],
 })

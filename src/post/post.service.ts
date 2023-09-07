@@ -12,6 +12,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/user/user.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class PostService {
@@ -21,6 +22,7 @@ export class PostService {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly CloudinaryService: CloudinaryService,
+    private readonly notificationService: NotificationsService,
   ) {}
 
   async create(
@@ -35,11 +37,18 @@ export class PostService {
           `You cannot associate the post to a user that does not exist`,
         );
       const { secure_url } = await this.CloudinaryService.uploadFile(file);
-      return await this.postModel.create({
+
+      const newPost = await this.postModel.create({
         owner: id,
         ...createPostDto,
         image: secure_url,
       });
+      await this.notificationService.create({
+        idUser: id,
+        message: `Has publicado un nuevo producto`,
+      });
+
+      return newPost;
     } catch (error) {
       this.handleExceptions(error);
     }
@@ -62,7 +71,13 @@ export class PostService {
   async update(id: string, updatePostDto: UpdatePostDto) {
     try {
       const post = await this.findByID(id);
-      post.updateOne(post);
+      await post.updateOne(post);
+
+      await this.notificationService.create({
+        idUser: post.owner,
+        message: `Tu publicacion se ha actualizado correctamente`,
+      });
+
       return { ...post.toJSON(), ...updatePostDto };
     } catch (error) {
       this.handleExceptions(error);
@@ -70,10 +85,16 @@ export class PostService {
   }
 
   async remove(id: string) {
-    const { deletedCount } = await this.postModel.deleteOne({ _id: id });
-    if (deletedCount === 0) {
+    const post = await this.findByID(id);
+    // const { deletedCount } = await this.postModel.deleteOne({ _id: id });
+    if (!post) {
       throw new BadRequestException(`Post with id "${id}" not found`);
     }
+    await this.postModel.deleteOne({ _id: id });
+    await this.notificationService.create({
+      idUser: post.owner,
+      message: `Tu publicacion se ha eliminado correctamente`,
+    });
     return 'Post deleted';
   }
 

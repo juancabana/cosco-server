@@ -9,6 +9,7 @@ import { PostModule } from './post/post.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     UserModule,
     PostModule,
     FavoritesModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
