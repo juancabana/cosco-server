@@ -20,6 +20,11 @@ export class FavoritesController {
     return this.favoritesService.findAll();
   }
 
+  @Get('user/:id')
+  findUserFavorites(@Param('id', ParseMongoIdPipe) id: string) {
+    return this.favoritesService.findAllUserFavorites(id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseMongoIdPipe) id: string) {
     return this.favoritesService.findById(id);

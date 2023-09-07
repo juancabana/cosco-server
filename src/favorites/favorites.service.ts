@@ -43,6 +43,14 @@ export class FavoritesService {
     return favorite;
   }
 
+  async findAllUserFavorites(id: string) {
+    const user = await this.userService.findById(id);
+    if (!user) throw new BadRequestException(`User with id "${id}" not found`);
+
+    const favorites = await this.favoriteModel.find({ idUser: id });
+    return favorites;
+  }
+
   async remove(id: string) {
     const { deletedCount } = await this.favoriteModel.deleteOne({ _id: id });
     if (deletedCount === 0) {
