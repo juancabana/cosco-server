@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { User } from './entities/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { PostService } from 'src/post/post.service';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,7 @@ export class UserService {
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly postService: PostService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -49,8 +51,10 @@ export class UserService {
 
   async remove(id: string) {
     const { deletedCount } = await this.userModel.deleteOne({ _id: id });
-    if (deletedCount === 0)
+    if (deletedCount === 0) {
       throw new BadRequestException(`User with id "${id}" not found`);
+    }
+    await this.postService.removeMany(id);
 
     return 'User Deleted';
   }

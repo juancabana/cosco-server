@@ -1,5 +1,4 @@
-import { SchemaFactory } from '@nestjs/mongoose';
-import { Prop, Schema } from '@nestjs/mongoose/dist/decorators';
+import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
