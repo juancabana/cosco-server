@@ -52,14 +52,14 @@ export class UserService {
   }
 
   async findById(id: string) {
-    const user = await this.userModel.findById(id);
+    const user = await this.userModel.findById(id).lean();
     if (!user) throw new BadRequestException(`User with id "${id}" not found`);
     return user;
   }
   async findByEmail(email: string) {
     const user = await this.userModel
       .findOne({ email: email })
-      .select('email password')
+      .select('email password isActive _id')
       .lean();
     if (!user)
       throw new UnauthorizedException(`Credentials are not valid (email)`);

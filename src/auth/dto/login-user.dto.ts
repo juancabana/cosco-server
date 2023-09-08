@@ -7,11 +7,12 @@ import {
   IsOptional,
   IsUrl,
   MinLength,
+  IsMongoId,
 } from 'class-validator';
 
 export class LoginUserDto {
-  @IsEmail()
-  email: string;
+  @IsMongoId()
+  _id: string;
 
   @IsString()
   @MinLength(6)

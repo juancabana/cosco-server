@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -27,7 +28,11 @@ export class AuthController {
 
   // Login User
   @Post('login')
-  loginUser(@Body() createUserDto: LoginUserDto) {
+  loginUser(
+    @Body() createUserDto: LoginUserDto,
+    @Req() request: Express.Request,
+  ) {
+    console.log(request.user);
     return this.authService.login(createUserDto);
   }
 }
