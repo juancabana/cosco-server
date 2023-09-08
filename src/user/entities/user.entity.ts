@@ -22,6 +22,7 @@ export class User extends Document {
 
   @Prop({
     required: true,
+    select: false,
   })
   password: string;
 
@@ -42,6 +43,7 @@ export class User extends Document {
   @Prop({
     required: true,
     default: true,
+    select: false,
   })
   isActive: boolean;
 

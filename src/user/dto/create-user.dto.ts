@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsUrl,
   MinLength,
+  IsLowercase,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -21,6 +22,7 @@ export class CreateUserDto {
   fullName: string;
 
   @IsEmail()
+  @IsLowercase()
   email: string;
 
   @IsString()

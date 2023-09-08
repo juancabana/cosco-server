@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
   forwardRef,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -32,11 +33,11 @@ export class UserService {
     try {
       const { password, ...userData } = createUserDto;
 
-      // TODO: retornar el JWT de acceso
-      return await this.userModel.create({
+      const user = await this.userModel.create({
         ...userData,
         password: hashSync(password, 10),
       });
+      return user.toObject({ getters: true, virtuals: true });
     } catch (error) {
       this.handleExceptions(error);
     }
@@ -53,6 +54,15 @@ export class UserService {
   async findById(id: string) {
     const user = await this.userModel.findById(id);
     if (!user) throw new BadRequestException(`User with id "${id}" not found`);
+    return user;
+  }
+  async findByEmail(email: string) {
+    const user = await this.userModel
+      .findOne({ email: email })
+      .select('email password')
+      .lean();
+    if (!user)
+      throw new UnauthorizedException(`Credentials are not valid (email)`);
     return user;
   }
 
