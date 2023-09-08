@@ -14,6 +14,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PostService } from 'src/post/post.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { FavoritesService } from 'src/favorites/favorites.service';
+import { hashSync } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -29,7 +30,13 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     try {
-      return await this.userModel.create(createUserDto);
+      const { password, ...userData } = createUserDto;
+
+      // TODO: retornar el JWT de acceso
+      return await this.userModel.create({
+        ...userData,
+        password: hashSync(password, 10),
+      });
     } catch (error) {
       this.handleExceptions(error);
     }

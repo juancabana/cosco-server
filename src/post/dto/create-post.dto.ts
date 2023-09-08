@@ -6,22 +6,27 @@ import {
   IsOptional,
   IsString,
   Min,
+  MinLength,
 } from 'class-validator';
 
 export class CreatePostDto {
   @IsString()
+  @MinLength(1)
   tittle: string;
 
   @IsString()
   @IsAlpha()
+  @MinLength(1)
   product: string;
 
   @IsString()
   @IsAlpha()
+  @MinLength(1)
   departament: string;
 
   @IsString()
   @IsAlpha()
+  @MinLength(1)
   city: string;
 
   @Type(() => Number)
@@ -31,6 +36,7 @@ export class CreatePostDto {
 
   @IsString()
   @IsAlpha()
+  @MinLength(1)
   massUnit: string;
 
   @Type(() => Number)

@@ -51,9 +51,6 @@ export class NotificationsService {
     const { deletedCount } = await this.notificationModel.deleteMany({
       idUser: id,
     });
-    if (deletedCount === 0) {
-      throw new BadRequestException(`Notification with id "${id}" not found`);
-    }
     return 'Notifications deleted';
   }
 }

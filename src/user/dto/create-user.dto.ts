@@ -6,21 +6,30 @@ import {
   Matches,
   IsOptional,
   IsUrl,
+  MinLength,
 } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
   @IsAlpha()
   @MaxLength(15)
+  @MinLength(1)
   username: string;
 
   @IsString()
+  @MinLength(1)
   fullName: string;
 
   @IsEmail()
   email: string;
 
   @IsString()
+  @MinLength(6)
+  @MaxLength(50)
+  @Matches(/(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    message:
+      'The password must have a Uppercase, lowercase letter and a number',
+  })
   password: string;
 
   @IsString()
@@ -33,6 +42,7 @@ export class CreateUserDto {
   image: string;
 
   @IsString()
+  @MinLength(1)
   description: string;
 
   @IsString()
