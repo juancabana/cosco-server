@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -16,12 +17,16 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileFilter } from 'src/cloudinary/helpers/fileFilter.helper';
+import { AuthGuard } from '@nestjs/passport';
+import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post(':id')
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: fileFilter,
@@ -31,6 +36,7 @@ export class PostController {
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() createPostDto: CreatePostDto,
     @UploadedFile() file: Express.Multer.File,
+    @IsThatUser('id') user: User,
   ) {
     if (!file) {
       throw new BadRequestException('You must upload an image');
@@ -45,25 +51,39 @@ export class PostController {
   }
 
   @Get('user/:id')
-  findUserPosts(@Param('id', ParseMongoIdPipe) id: string) {
+  @UseGuards(AuthGuard('jwt'))
+  findUserPosts(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @IsThatUser('id') user: User,
+  ) {
     return this.postService.findAllUserPosts(id);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseMongoIdPipe) id: string) {
+  @UseGuards(AuthGuard('jwt'))
+  findOne(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @IsThatUser('id') user: User,
+  ) {
     return this.postService.findByID(id);
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
   update(
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() updatePostDto: UpdatePostDto,
+    @IsThatUser('id') user: User,
   ) {
     return this.postService.update(id, updatePostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseMongoIdPipe) id: string) {
+  @UseGuards(AuthGuard('jwt'))
+  remove(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @IsThatUser('id') user: User,
+  ) {
     return this.postService.remove(id);
   }
 }
