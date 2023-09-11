@@ -10,6 +10,7 @@ import {
   UploadedFile,
   BadRequestException,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -20,6 +21,7 @@ import { fileFilter } from 'src/cloudinary/helpers/fileFilter.helper';
 import { AuthGuard } from '@nestjs/passport';
 import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
 import { User } from 'src/user/entities/user.entity';
+import { paginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('post')
 export class PostController {
@@ -46,8 +48,10 @@ export class PostController {
   }
 
   @Get()
-  async findAll() {
-    return await this.postService.findAll();
+  async findAll(@Query() paginationDto: paginationDto) {
+    console.log({ paginationDto });
+
+    return await this.postService.findAll(paginationDto);
   }
 
   @Get('user/:id')

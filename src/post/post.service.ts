@@ -13,6 +13,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/user/user.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
+import { paginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class PostService {
@@ -54,8 +55,9 @@ export class PostService {
     }
   }
 
-  async findAll() {
-    return await this.postModel.find();
+  async findAll(paginationDto: paginationDto) {
+    const { limit = 2, offset = 0 } = paginationDto;
+    return await this.postModel.find({}, '-__v').limit(limit).skip(offset);
   }
 
   async findByID(id: string) {
