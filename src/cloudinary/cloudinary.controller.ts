@@ -13,16 +13,16 @@ import { fileFilter } from './helpers/fileFilter.helper';
 export class CloudinaryController {
   constructor(private readonly cloudinaryService: CloudinaryService) {}
 
-  @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      fileFilter: fileFilter,
-    }),
-  )
-  async uploadImage(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('Make sure that the file is an image');
-    }
-    return await this.cloudinaryService.uploadFile(file);
-  }
+  // @Post('upload')
+  // @UseInterceptors(
+  //   FileInterceptor('file', {
+  //     fileFilter: fileFilter,
+  //   }),
+  // )
+  // async uploadImage(@UploadedFile() file: Express.Multer.File) {
+  //   if (!file) {
+  //     throw new BadRequestException('Make sure that the file is an image');
+  //   }
+  //   return await this.cloudinaryService.uploadFile(file);
+  // }
 }

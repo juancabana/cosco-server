@@ -10,18 +10,20 @@ import {
   UploadedFile,
   BadRequestException,
   UseGuards,
-  Req,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { fileFilter } from 'src/cloudinary/helpers/fileFilter.helper';
-import { AuthGuard } from '@nestjs/passport';
 import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
 import { User } from './entities/user.entity';
 
+@ApiTags('Users')
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

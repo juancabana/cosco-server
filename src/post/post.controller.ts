@@ -12,17 +12,19 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { fileFilter } from 'src/cloudinary/helpers/fileFilter.helper';
-import { AuthGuard } from '@nestjs/passport';
 import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
 import { User } from 'src/user/entities/user.entity';
 import { paginationDto } from 'src/common/dto/pagination.dto';
 
+@ApiTags('Posts')
 @Controller('post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
@@ -43,7 +45,6 @@ export class PostController {
     if (!file) {
       throw new BadRequestException('You must upload an image');
     }
-    // return { id, file, ...createPostDto };
     return this.postService.create(id, file, createPostDto);
   }
 

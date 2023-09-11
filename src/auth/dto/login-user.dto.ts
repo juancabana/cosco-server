@@ -1,19 +1,18 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
-  IsAlpha,
   MaxLength,
-  IsEmail,
   Matches,
-  IsOptional,
-  IsUrl,
   MinLength,
   IsMongoId,
 } from 'class-validator';
 
 export class LoginUserDto {
+  @ApiProperty()
   @IsMongoId()
   _id: string;
 
+  @ApiProperty()
   @IsString()
   @MinLength(6)
   @MaxLength(50)

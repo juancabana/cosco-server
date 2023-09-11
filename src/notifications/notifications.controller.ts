@@ -1,10 +1,12 @@
 import { Controller, Get, Param, Delete, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 import { NotificationsService } from './notifications.service';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
-import { AuthGuard } from '@nestjs/passport';
 import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
 import { User } from 'src/user/entities/user.entity';
 
+@ApiTags('Notifications')
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}

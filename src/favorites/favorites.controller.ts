@@ -6,12 +6,14 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 import { FavoritesService } from './favorites.service';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
-import { AuthGuard } from '@nestjs/passport';
 import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
 import { User } from 'src/user/entities/user.entity';
 
+@ApiTags('Favorites')
 @Controller('favorites')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
