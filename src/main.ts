@@ -7,6 +7,7 @@ async function main() {
   const app = await NestFactory.create(AppModule, {
     bodyParser: true,
   });
+  app.enableCors();
 
   app.setGlobalPrefix('api');
 
