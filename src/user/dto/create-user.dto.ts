@@ -9,6 +9,7 @@ import {
   IsUrl,
   MinLength,
   IsLowercase,
+  IsIn,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -57,5 +58,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsString()
+  @MinLength(1)
+  @IsIn(['OWNER', 'CUSTOMER'])
   role: string;
 }

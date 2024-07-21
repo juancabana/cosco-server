@@ -37,8 +37,6 @@ export class UserController {
   // Get all users
   @Get()
   findAll() {
-    // @Req() request: Express.Request
-    // console.log(request.user);
     return this.userService.findAll();
   }
 
