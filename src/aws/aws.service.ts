@@ -9,13 +9,13 @@ export class AwsService {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   });
 
-  async uploadImage(file: Express.Multer.File) {
+  async uploadImage(file: Express.Multer.File, id: string) {
     const { originalname } = file;
 
     return await this.s3Upload(
       file.buffer,
       this.AWS_S3_BUCKET_NAME,
-      originalname,
+      `${id}-${originalname}`,
       file.mimetype,
     );
   }

@@ -13,6 +13,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/user/user.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { paginationDto } from '../common/dto/pagination.dto';
+import { AwsService } from 'src/aws/aws.service';
 
 @Injectable()
 export class PostService {
@@ -22,9 +23,14 @@ export class PostService {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly notificationService: NotificationsService,
+    private readonly awsService: AwsService,
   ) {}
 
-  async create(id: string, file: string, createPostDto: CreatePostDto) {
+  async create(
+    id: string,
+    file: Express.Multer.File,
+    createPostDto: CreatePostDto,
+  ) {
     try {
       const user = await this.userService.findById(id);
       if (!user)
@@ -32,9 +38,14 @@ export class PostService {
           `You cannot associate the post to a user that does not exist`,
         );
 
+      const image = await this.awsService.uploadImage(file, id);
+      if (!image.Location) {
+        throw new BadRequestException('Error uploading image');
+      }
+
       const newPost = await this.postModel.create({
         owner: id,
-        image: file,
+        image: image.Location,
         ...createPostDto,
       });
       await this.notificationService.create({
