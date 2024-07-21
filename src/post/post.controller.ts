@@ -22,15 +22,11 @@ import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
 import { User } from 'src/user/entities/user.entity';
 import { type paginationDto } from 'src/common/dto/pagination.dto';
-import { AwsService } from 'src/aws/aws.service';
 
 @ApiTags('Posts')
 @Controller('post')
 export class PostController {
-  constructor(
-    private readonly postService: PostService,
-    private readonly awsService: AwsService,
-  ) {}
+  constructor(private readonly postService: PostService) {}
 
   @Post(':id')
   @UseGuards(AuthGuard('jwt'))
@@ -44,11 +40,7 @@ export class PostController {
     if (!file) {
       throw new BadRequestException('You must upload an image');
     }
-    const image = await this.awsService.uploadImage(file);
-    if (!image.Location) {
-      throw new BadRequestException('Error uploading image');
-    }
-    return this.postService.create(id, image.Location, createPostDto);
+    return this.postService.create(id, file, createPostDto);
   }
 
   @Get()
