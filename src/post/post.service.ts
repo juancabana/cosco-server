@@ -28,7 +28,7 @@ export class PostService {
 
   async create(
     id: string,
-    file: Express.Multer.File,
+    files: Express.Multer.File[],
     createPostDto: CreatePostDto,
   ) {
     try {
@@ -38,14 +38,16 @@ export class PostService {
           `You cannot associate the post to a user that does not exist`,
         );
 
-      const image = await this.awsService.uploadImage(file, id);
-      if (!image.Location) {
+      const images = await Promise.all(
+        files.map((file) => this.awsService.uploadImage(file, id)),
+      );
+      if (!images) {
         throw new BadRequestException('Error uploading image');
       }
 
       const newPost = await this.postModel.create({
         owner: id,
-        image: image.Location,
+        images: images.map((image) => image.Location),
         ...createPostDto,
       });
       await this.notificationService.create({

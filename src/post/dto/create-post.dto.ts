@@ -66,5 +66,5 @@ export class CreatePostDto {
   description: string;
 
   @ApiProperty()
-  image: any;
+  images: any;
 }
