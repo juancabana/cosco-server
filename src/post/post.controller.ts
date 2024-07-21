@@ -7,12 +7,12 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFile,
   BadRequestException,
   UseGuards,
   Query,
+  UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { PostService } from './post.service';
@@ -30,23 +30,21 @@ export class PostController {
 
   @Post(':id')
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(FileInterceptor('file'))
-  async create(
+  @UseInterceptors(FilesInterceptor('images', 5))
+  create(
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() createPostDto: CreatePostDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() images: Express.Multer.File[],
     @IsThatUser('id') user: User,
   ) {
-    if (!file) {
-      throw new BadRequestException('You must upload an image');
+    if (!images) {
+      throw new BadRequestException('You must upload at least one image');
     }
-    return this.postService.create(id, file, createPostDto);
+    return this.postService.create(id, images, createPostDto);
   }
 
   @Get()
   async findAll(@Query() pagination: paginationDto) {
-    console.log({ pagination });
-
     return await this.postService.findAll(pagination);
   }
 
