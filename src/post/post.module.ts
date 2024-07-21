@@ -4,12 +4,12 @@ import { PostController } from './post.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from './entities/post.entity';
 import { UserModule } from 'src/user/user.module';
-import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { NotificationsModule } from 'src/notifications/notifications.module';
+import { AwsService } from 'src/aws/aws.service';
 
 @Module({
   controllers: [PostController],
-  providers: [PostService],
+  providers: [PostService, AwsService],
   imports: [
     MongooseModule.forFeature([
       {
@@ -17,7 +17,6 @@ import { NotificationsModule } from 'src/notifications/notifications.module';
         schema: PostSchema,
       },
     ]),
-    CloudinaryModule,
     forwardRef(() => UserModule),
     forwardRef(() => NotificationsModule),
   ],

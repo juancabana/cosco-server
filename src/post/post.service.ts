@@ -11,7 +11,6 @@ import { Post } from './entities/post.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/user/user.service';
-import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { paginationDto } from '../common/dto/pagination.dto';
 
@@ -22,27 +21,21 @@ export class PostService {
     private readonly postModel: Model<Post>,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
-    private readonly CloudinaryService: CloudinaryService,
     private readonly notificationService: NotificationsService,
   ) {}
 
-  async create(
-    id: string,
-    file: Express.Multer.File,
-    createPostDto: CreatePostDto,
-  ) {
+  async create(id: string, file: string, createPostDto: CreatePostDto) {
     try {
       const user = await this.userService.findById(id);
       if (!user)
         throw new BadRequestException(
           `You cannot associate the post to a user that does not exist`,
         );
-      const { secure_url } = await this.CloudinaryService.uploadFile(file);
 
       const newPost = await this.postModel.create({
         owner: id,
+        image: file,
         ...createPostDto,
-        image: secure_url,
       });
       await this.notificationService.create({
         idUser: id,
