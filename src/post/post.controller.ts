@@ -19,24 +19,23 @@ import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
-import { fileFilter } from 'src/cloudinary/helpers/fileFilter.helper';
 import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
 import { User } from 'src/user/entities/user.entity';
-import { paginationDto } from 'src/common/dto/pagination.dto';
+import { type paginationDto } from 'src/common/dto/pagination.dto';
+import { AwsService } from 'src/aws/aws.service';
 
 @ApiTags('Posts')
 @Controller('post')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly awsService: AwsService,
+  ) {}
 
   @Post(':id')
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(
-    FileInterceptor('file', {
-      fileFilter: fileFilter,
-    }),
-  )
-  create(
+  @UseInterceptors(FileInterceptor('file'))
+  async create(
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() createPostDto: CreatePostDto,
     @UploadedFile() file: Express.Multer.File,
@@ -45,14 +44,18 @@ export class PostController {
     if (!file) {
       throw new BadRequestException('You must upload an image');
     }
-    return this.postService.create(id, file, createPostDto);
+    const image = await this.awsService.uploadImage(file);
+    if (!image.Location) {
+      throw new BadRequestException('Error uploading image');
+    }
+    return this.postService.create(id, image.Location, createPostDto);
   }
 
   @Get()
-  async findAll(@Query() paginationDto: paginationDto) {
-    console.log({ paginationDto });
+  async findAll(@Query() pagination: paginationDto) {
+    console.log({ pagination });
 
-    return await this.postService.findAll(paginationDto);
+    return await this.postService.findAll(pagination);
   }
 
   @Get('user/:id')

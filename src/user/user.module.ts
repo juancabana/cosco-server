@@ -3,7 +3,6 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { User, UserSchema } from './entities/user.entity';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { PostModule } from 'src/post/post.module';
 import { NotificationsModule } from 'src/notifications/notifications.module';
 import { FavoritesModule } from 'src/favorites/favorites.module';
@@ -18,7 +17,6 @@ import { FavoritesModule } from 'src/favorites/favorites.module';
         schema: UserSchema,
       },
     ]),
-    CloudinaryModule,
     forwardRef(() => PostModule),
     forwardRef(() => NotificationsModule),
     FavoritesModule,

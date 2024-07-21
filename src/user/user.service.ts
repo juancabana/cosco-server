@@ -11,7 +11,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Model } from 'mongoose';
 import { User } from './entities/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PostService } from 'src/post/post.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { FavoritesService } from 'src/favorites/favorites.service';
@@ -22,7 +21,6 @@ export class UserService {
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
-    private readonly cloudinaryService: CloudinaryService,
     private readonly postService: PostService,
     private readonly notificationsSevice: NotificationsService,
     @Inject(forwardRef(() => FavoritesService))
@@ -85,12 +83,12 @@ export class UserService {
     return 'User Deleted';
   }
 
-  async uploadFile(id: string, file: Express.Multer.File) {
-    const image = await this.cloudinaryService.uploadFile(file);
-    const newUser = await this.update(id, { image: image.secure_url });
+  // async uploadFile(id: string, file: Express.Multer.File) {
+  //   const image = await this.cloudinaryService.uploadFile(file);
+  //   const newUser = await this.update(id, { image: image.secure_url });
 
-    return newUser;
-  }
+  //   return newUser;
+  // }
 
   private handleExceptions(error: any) {
     if (error.code === 11000) {

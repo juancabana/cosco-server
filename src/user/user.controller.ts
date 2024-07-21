@@ -6,19 +6,14 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
-  UploadedFile,
-  BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
-import { fileFilter } from 'src/cloudinary/helpers/fileFilter.helper';
 import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
 import { User } from './entities/user.entity';
 
@@ -37,8 +32,6 @@ export class UserController {
   // Get all users
   @Get()
   findAll() {
-    // @Req() request: Express.Request
-    // console.log(request.user);
     return this.userService.findAll();
   }
 
@@ -55,12 +48,6 @@ export class UserController {
   // Update info User
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  // Validate image
-  @UseInterceptors(
-    FileInterceptor('file', {
-      fileFilter: fileFilter,
-    }),
-  )
   async update(
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -70,24 +57,19 @@ export class UserController {
   }
 
   // Update and upload image
-  @Post('update-image/:id')
-  @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(
-    FileInterceptor('file', {
-      fileFilter: fileFilter,
-    }),
-  )
-  async uploadImage(
-    @Param('id', ParseMongoIdPipe) id: string,
-    @UploadedFile() file: Express.Multer.File,
-    @IsThatUser('id') user: User,
-  ) {
-    console.log({ fileInController: file });
-    if (!file) {
-      throw new BadRequestException('Make sure that the file is an image');
-    }
-    return await this.userService.uploadFile(id, file);
-  }
+  // @Post('update-image/:id')
+  // @UseGuards(AuthGuard('jwt'))
+  // async uploadImage(
+  //   @Param('id', ParseMongoIdPipe) id: string,
+  //   @UploadedFile() file: Express.Multer.File,
+  //   @IsThatUser('id') user: User,
+  // ) {
+  //   console.log({ fileInController: file });
+  //   if (!file) {
+  //     throw new BadRequestException('Make sure that the file is an image');
+  //   }
+  //   return await this.userService.uploadFile(id, file);
+  // }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
