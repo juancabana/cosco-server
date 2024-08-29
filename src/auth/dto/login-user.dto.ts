@@ -4,19 +4,20 @@ import {
   MaxLength,
   Matches,
   MinLength,
-  IsMongoId,
+  IsEmail,
 } from 'class-validator';
 
 export class LoginUserDto {
   @ApiProperty()
-  @IsMongoId()
-  _id: string;
+  @IsString()
+  @IsEmail()
+  email: string;
 
   @ApiProperty()
   @IsString()
   @MinLength(6)
   @MaxLength(50)
-  @Matches(/(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+  @Matches(/(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{6,50}/, {
     message:
       'The password must have a Uppercase, lowercase letter and a number',
   })

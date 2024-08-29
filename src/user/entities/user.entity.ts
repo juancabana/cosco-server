@@ -2,20 +2,31 @@ import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document } from 'mongoose';
 
+type Role = 'CUSTOMER' | 'OWNER';
 @Schema()
 export class User extends Document {
   @ApiProperty()
   @Prop({
-    unique: true,
     required: true,
   })
-  username: string;
+  firstName: string;
+
+  @ApiProperty()
+  @Prop()
+  secondName: string;
 
   @ApiProperty()
   @Prop({
     required: true,
   })
-  fullName: string;
+  lastName: string;
+
+  @ApiProperty()
+  @Prop({
+    required: false,
+    default: '',
+  })
+  secondLastName: string;
 
   @ApiProperty()
   @Prop({
@@ -43,7 +54,8 @@ export class User extends Document {
 
   @ApiProperty()
   @Prop({
-    required: true,
+    required: false,
+    default: '',
   })
   description: string;
 
@@ -56,10 +68,10 @@ export class User extends Document {
 
   @ApiProperty()
   @Prop({
-    required: true,
-    default: ['user'],
+    required: false,
+    default: ['CUSTOMER'],
   })
-  roles: string[];
+  roles: Role[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

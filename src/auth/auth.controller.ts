@@ -22,10 +22,9 @@ export class AuthController {
   // Login User
   @Post('login')
   loginUser(
-    @Body() createUserDto: LoginUserDto,
-    @Req() request: Express.Request,
+    @Body() loginUserDto: LoginUserDto,
+    // @Req() request: Express.Request,
   ) {
-    console.log(request.user);
-    return this.authService.login(createUserDto);
+    return this.authService.login(loginUserDto);
   }
 }

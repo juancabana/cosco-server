@@ -15,15 +15,37 @@ import {
 export class CreateUserDto {
   @ApiProperty()
   @IsString()
-  @IsAlpha()
+  @Matches(/^[a-zA-Z]+$/, {
+    message: 'firstName must contain only letters (a-zA-Z)',
+  })
   @MaxLength(15)
   @MinLength(1)
-  username: string;
+  firstName: string;
 
   @ApiProperty()
   @IsString()
+  @MaxLength(15)
+  @IsOptional()
+  @Matches(/^[a-zA-Z]*$/, {
+    message: 'secondName must contain only letters (a-zA-Z)',
+  })
+  secondName: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsAlpha()
+  @MaxLength(15)
   @MinLength(1)
-  fullName: string;
+  lastName: string;
+
+  @ApiProperty()
+  @IsString()
+  @MaxLength(15)
+  @IsOptional()
+  @Matches(/^[a-zA-Z]*$/, {
+    message: 'secondLastName must contain only letters (a-zA-Z)',
+  })
+  secondLastName: string;
 
   @ApiProperty()
   @IsEmail()
@@ -42,7 +64,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsString()
-  @Matches(/^(3[0-9]{2}|01[0-9]{2})[0-9]{7}$/)
+  @Matches(/^\d{10}$/)
   phoneNumber: string;
 
   @ApiProperty()
@@ -52,11 +74,13 @@ export class CreateUserDto {
   image: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   @MinLength(1)
   description: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   @MinLength(1)
   @IsIn(['OWNER', 'CUSTOMER'])

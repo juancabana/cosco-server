@@ -35,7 +35,13 @@ export class UserService {
         ...userData,
         password: hashSync(password, 10),
       });
-      return user.toObject({ getters: true, virtuals: true });
+
+      // Excluir la propiedad password del objeto retornado
+      const { password: _, ...userWithoutPassword } = user.toObject({
+        getters: true,
+        virtuals: true,
+      });
+      return userWithoutPassword;
     } catch (error) {
       this.handleExceptions(error);
     }
@@ -57,7 +63,9 @@ export class UserService {
   async findByEmail(email: string) {
     const user = await this.userModel
       .findOne({ email: email })
-      .select('email password isActive _id')
+      .select(
+        'email password isActive _id firstName lastName image secondName secondLastName',
+      )
       .lean();
     if (!user)
       throw new UnauthorizedException(`Credentials are not valid (email)`);

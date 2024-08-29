@@ -36,6 +36,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException(`User is inactive, talk with an admin`);
     }
 
-    return { id: user._id, username: user.username, email: user.email };
+    return {
+      id: user._id,
+      firstName: user.firstName,
+      secondName: user.secondName,
+      lastName: user.lastName,
+      secondLastName: user.secondLastName,
+      email: user.email,
+    };
   }
 }

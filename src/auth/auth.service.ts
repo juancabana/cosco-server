@@ -24,14 +24,16 @@ export class AuthService {
   }
 
   async login(loginUserAuthDto: LoginUserDto) {
-    const { _id, password } = loginUserAuthDto;
-    const user = await this.userService.findById(_id);
-    console.log(user);
+    const { email, password } = loginUserAuthDto;
+    const user = await this.userService.findByEmail(email);
+
+    const { password: passwordUser, ...userWithoutPassword } = user;
+
     if (!compareSync(password, user.password))
       throw new UnauthorizedException('Credentials are not valid (password)');
     return {
-      ...user,
-      token: this.getJwt({ _id: user._id }),
+      ...userWithoutPassword,
+      token: this.getJwt({ _id: userWithoutPassword._id }),
     };
   }
 
