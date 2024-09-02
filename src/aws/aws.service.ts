@@ -9,34 +9,30 @@ export class AwsService {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   });
 
-  async uploadImage(file: Express.Multer.File, id: string) {
-    const { originalname } = file;
+  async uploadImage(
+    base64Image: string,
+    key: string,
+  ): Promise<S3.ManagedUpload.SendData> {
+    if (!base64Image) {
+      throw new Error('Image data is required');
+    }
 
-    return await this.s3Upload(
-      file.buffer,
-      this.AWS_S3_BUCKET_NAME,
-      `${id}-${originalname}`,
-      file.mimetype,
-    );
-  }
+    // Extraer el tipo de contenido y los datos base64
+    const matches = base64Image.match(/^data:(.+);base64,(.+)$/);
+    if (!matches) {
+      throw new Error('Invalid base64 image data');
+    }
 
-  async s3Upload(file: Buffer, bucket: string, name: string, mimetype: string) {
-    const params = {
-      Bucket: bucket,
-      Key: String(name),
-      Body: file,
-      ContentType: mimetype,
-      contentDisposition: 'inline',
-      CreateBucketConfiguration: {
-        LocationConstraint: 'ap-south-1',
-      },
+    const contentType = matches[1];
+    const imageData = Buffer.from(matches[2], 'base64');
+
+    const params: S3.PutObjectRequest = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: key,
+      Body: imageData,
+      ContentType: contentType,
     };
 
-    try {
-      const s3Response = await this.s3.upload(params).promise();
-      return s3Response;
-    } catch (e) {
-      console.log(e);
-    }
+    return this.s3.upload(params).promise();
   }
 }

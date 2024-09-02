@@ -67,10 +67,9 @@ export class CreateUserDto {
   @Matches(/^\d{10}$/)
   phoneNumber: string;
 
-  @ApiProperty()
-  @IsString()
+  @ApiProperty({ type: 'string', format: 'binary', required: false })
   @IsOptional()
-  @IsUrl()
+  @IsString()
   image: string;
 
   @ApiProperty()

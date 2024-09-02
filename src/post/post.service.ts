@@ -38,24 +38,25 @@ export class PostService {
           `You cannot associate the post to a user that does not exist`,
         );
 
-      const images = await Promise.all(
-        files.map((file) => this.awsService.uploadImage(file, id)),
-      );
-      if (!images) {
-        throw new BadRequestException('Error uploading image');
-      }
+      // const images = await Promise.all(
+      //   files.map((file) => this.awsService.uploadImage(file, id)),
+      // );
+      // if (!images) {
+      //   throw new BadRequestException('Error uploading image');
+      // }
 
-      const newPost = await this.postModel.create({
-        owner: id,
-        images: images.map((image) => image.Location),
-        ...createPostDto,
-      });
+      // const newPost = await this.postModel.create({
+      //   owner: id,
+      //   images: images.map((image) => image.Location),
+      //   ...createPostDto,
+      // });
       await this.notificationService.create({
         idUser: id,
         message: `Has publicado un nuevo producto`,
       });
 
-      return newPost;
+      // return newPost;
+      return 'newPost';
     } catch (error) {
       this.handleExceptions(error);
     }

@@ -6,10 +6,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PostModule } from 'src/post/post.module';
 import { NotificationsModule } from 'src/notifications/notifications.module';
 import { FavoritesModule } from 'src/favorites/favorites.module';
+import { AwsService } from 'src/aws/aws.service';
 
 @Module({
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, AwsService],
   imports: [
     MongooseModule.forFeature([
       {

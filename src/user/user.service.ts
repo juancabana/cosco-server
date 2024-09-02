@@ -15,6 +15,7 @@ import { PostService } from 'src/post/post.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { FavoritesService } from 'src/favorites/favorites.service';
 import { hashSync } from 'bcrypt';
+import { AwsService } from 'src/aws/aws.service';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,7 @@ export class UserService {
     private readonly userModel: Model<User>,
     private readonly postService: PostService,
     private readonly notificationsSevice: NotificationsService,
+    private readonly awsService: AwsService,
     @Inject(forwardRef(() => FavoritesService))
     private readonly favoriteService: FavoritesService,
   ) {}
@@ -56,10 +58,11 @@ export class UserService {
   }
 
   async findById(id: string) {
-    const user = await this.userModel.findById(id).lean();
+    const user = await this.userModel.findById(id);
     if (!user) throw new BadRequestException(`User with id "${id}" not found`);
     return user;
   }
+
   async findByEmail(email: string) {
     const user = await this.userModel
       .findOne({ email: email })
@@ -74,9 +77,23 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.findById(id);
-    await user.updateOne(updateUserDto);
 
-    return { ...user.toJSON(), ...updateUserDto };
+    // Verificar si la imagen está presente y no está vacía
+    if (updateUserDto.image && typeof updateUserDto.image === 'string') {
+      const { Location } = await this.awsService.uploadImage(
+        updateUserDto.image,
+        `${id}-profile`,
+      );
+      updateUserDto.image = Location;
+    }
+
+    // return { ...user.toJSON(), ...updateUserDto };
+
+    // // Actualizar los datos del usuario
+    Object.assign(user, updateUserDto);
+    await user.save();
+
+    return user.toObject();
   }
 
   async remove(id: string) {

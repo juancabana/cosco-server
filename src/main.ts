@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import * as bodyParser from 'body-parser';
 
 async function main() {
   const app = await NestFactory.create(AppModule, {
@@ -10,6 +11,10 @@ async function main() {
   app.enableCors();
 
   app.setGlobalPrefix('api');
+
+  // Limitar el tamaño de la carga útil a 1 MB
+  app.use(bodyParser.json({ limit: '1.5mb' }));
+  app.use(bodyParser.urlencoded({ limit: '1.5mb', extended: true }));
 
   app.useGlobalPipes(
     new ValidationPipe({

@@ -49,7 +49,10 @@ export class User extends Document {
   phoneNumber: string;
 
   @ApiProperty()
-  @Prop()
+  @Prop({
+    required: false,
+    default: '',
+  })
   image: string;
 
   @ApiProperty()
