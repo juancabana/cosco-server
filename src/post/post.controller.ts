@@ -34,13 +34,13 @@ export class PostController {
   create(
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() createPostDto: CreatePostDto,
-    @UploadedFiles() images: Express.Multer.File[],
+    // @UploadedFiles() images: Express.Multer.File[],
     @IsThatUser('id') user: User,
   ) {
-    if (!images) {
+    if (!createPostDto.images) {
       throw new BadRequestException('You must upload at least one image');
     }
-    return this.postService.create(id, images, createPostDto);
+    return this.postService.create(id, createPostDto);
   }
 
   @Get()

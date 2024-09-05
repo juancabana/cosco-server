@@ -65,6 +65,8 @@ export class CreatePostDto {
   @IsString()
   description: string;
 
-  @ApiProperty()
-  images: any;
+  @ApiProperty({ type: 'string', format: 'binary', required: false })
+  @IsOptional()
+  @IsString()
+  images: string[];
 }

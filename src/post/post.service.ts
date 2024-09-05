@@ -26,17 +26,26 @@ export class PostService {
     private readonly awsService: AwsService,
   ) {}
 
-  async create(
-    id: string,
-    files: Express.Multer.File[],
-    createPostDto: CreatePostDto,
-  ) {
+  async create(id: string, createPostDto: CreatePostDto) {
     try {
       const user = await this.userService.findById(id);
       if (!user)
         throw new BadRequestException(
           `You cannot associate the post to a user that does not exist`,
         );
+
+      // if (updateUserDto.image && typeof updateUserDto.image === 'string') {
+      // Numero random para evitar que la imagen se cachee
+      const randomNumber = `${Math.random()}`;
+
+      // Actualizar los datos del usuario
+      const images = await Promise.all(
+        createPostDto.images.map((image) =>
+          this.awsService.uploadImage(image, `${id}-profile-${randomNumber}`),
+        ),
+      );
+
+      // }
 
       // const images = await Promise.all(
       //   files.map((file) => this.awsService.uploadImage(file, id)),
@@ -45,18 +54,18 @@ export class PostService {
       //   throw new BadRequestException('Error uploading image');
       // }
 
-      // const newPost = await this.postModel.create({
-      //   owner: id,
-      //   images: images.map((image) => image.Location),
-      //   ...createPostDto,
-      // });
-      await this.notificationService.create({
-        idUser: id,
-        message: `Has publicado un nuevo producto`,
+      const newPost = await this.postModel.create({
+        owner: id,
+        images: images.map((image) => image.Location),
+        ...createPostDto,
       });
+      // await this.notificationService.create({
+      //   idUser: id,
+      //   message: `Has publicado un nuevo producto`,
+      // });
 
       // return newPost;
-      return 'newPost';
+      return newPost;
     } catch (error) {
       this.handleExceptions(error);
     }

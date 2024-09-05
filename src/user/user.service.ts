@@ -80,14 +80,16 @@ export class UserService {
 
     // Verificar si la imagen está presente y no está vacía
     if (updateUserDto.image && typeof updateUserDto.image === 'string') {
+      // Numero random para evitar que la imagen se cachee
+      const randomNumber = `${Math.random()}`;
+
+      // Actualizar los datos del usuario
       const { Location } = await this.awsService.uploadImage(
         updateUserDto.image,
-        `${id}-profile`,
+        `${id}-profile-${randomNumber}`,
       );
       updateUserDto.image = Location;
     }
-
-    // return { ...user.toJSON(), ...updateUserDto };
 
     // // Actualizar los datos del usuario
     Object.assign(user, updateUserDto);
