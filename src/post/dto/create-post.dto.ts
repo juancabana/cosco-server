@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
   Min,
   MinLength,
 } from 'class-validator';
@@ -14,7 +15,7 @@ export class CreatePostDto {
   @ApiProperty()
   @IsString()
   @MinLength(1)
-  tittle: string;
+  title: string;
 
   @ApiProperty()
   @IsString()
@@ -24,13 +25,17 @@ export class CreatePostDto {
 
   @ApiProperty()
   @IsString()
-  @IsAlpha()
+  @Matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+$/, {
+    message: 'City must contain only letters (a-zA-Z) and Spanish characters',
+  })
   @MinLength(1)
-  departament: string;
+  department: string;
 
   @ApiProperty()
   @IsString()
-  @IsAlpha()
+  @Matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+$/, {
+    message: 'City must contain only letters (a-zA-Z) and Spanish characters',
+  })
   @MinLength(1)
   city: string;
 
@@ -66,7 +71,7 @@ export class CreatePostDto {
   description: string;
 
   @ApiProperty({ type: 'string', format: 'binary', required: false })
+  @IsString({ each: true })
   @IsOptional()
-  @IsString()
   images: string[];
 }

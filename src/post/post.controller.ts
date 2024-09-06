@@ -30,7 +30,7 @@ export class PostController {
 
   @Post(':id')
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(FilesInterceptor('images', 5))
+  // @UseInterceptors(FilesInterceptor('images', 5))
   create(
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() createPostDto: CreatePostDto,

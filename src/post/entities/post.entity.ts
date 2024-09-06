@@ -16,7 +16,7 @@ export class Post extends Document {
     unique: true,
     required: true,
   })
-  tittle: string;
+  title: string;
 
   @ApiProperty()
   @Prop({
@@ -28,7 +28,7 @@ export class Post extends Document {
   @Prop({
     required: true,
   })
-  departament: string;
+  department: string;
 
   @ApiProperty()
   @Prop({
@@ -70,7 +70,6 @@ export class Post extends Document {
 
   @ApiProperty()
   @Prop({
-    unique: true,
     required: true,
   })
   description: string;

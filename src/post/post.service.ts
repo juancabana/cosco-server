@@ -44,7 +44,7 @@ export class PostService {
           this.awsService.uploadImage(image, `${id}-profile-${randomNumber}`),
         ),
       );
-
+      
       // }
 
       // const images = await Promise.all(
@@ -55,10 +55,11 @@ export class PostService {
       // }
 
       const newPost = await this.postModel.create({
+        ...createPostDto,
         owner: id,
         images: images.map((image) => image.Location),
-        ...createPostDto,
       });
+
       // await this.notificationService.create({
       //   idUser: id,
       //   message: `Has publicado un nuevo producto`,
