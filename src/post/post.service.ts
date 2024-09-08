@@ -36,15 +36,18 @@ export class PostService {
 
       // if (updateUserDto.image && typeof updateUserDto.image === 'string') {
       // Numero random para evitar que la imagen se cachee
-      const randomNumber = `${Math.random()}`;
 
       // Actualizar los datos del usuario
       const images = await Promise.all(
-        createPostDto.images.map((image) =>
-          this.awsService.uploadImage(image, `${id}-profile-${randomNumber}`),
-        ),
+        createPostDto.images.map((image) => {
+          const randomNumber = `${Math.random()}`;
+          return this.awsService.uploadImage(
+            image,
+            `${id}-profile-${randomNumber}`,
+          );
+        }),
       );
-      
+
       // }
 
       // const images = await Promise.all(

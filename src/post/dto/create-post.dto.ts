@@ -19,7 +19,6 @@ export class CreatePostDto {
 
   @ApiProperty()
   @IsString()
-  @IsAlpha()
   @MinLength(1)
   product: string;
 
@@ -33,9 +32,6 @@ export class CreatePostDto {
 
   @ApiProperty()
   @IsString()
-  @Matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+$/, {
-    message: 'City must contain only letters (a-zA-Z) and Spanish characters',
-  })
   @MinLength(1)
   city: string;
 
@@ -47,7 +43,6 @@ export class CreatePostDto {
 
   @ApiProperty()
   @IsString()
-  @IsAlpha()
   @MinLength(1)
   massUnit: string;
 
@@ -63,7 +58,6 @@ export class CreatePostDto {
 
   @ApiProperty()
   @IsString()
-  @IsAlpha()
   category: string;
 
   @ApiProperty()
