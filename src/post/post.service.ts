@@ -76,8 +76,12 @@ export class PostService {
   }
 
   async findAll(paginationDto: paginationDto) {
-    const { limit = 2, offset = 0 } = paginationDto;
-    return await this.postModel.find({}, '-__v').limit(limit).skip(offset);
+    const { limit = 20, offset = 0 } = paginationDto;
+    return await this.postModel
+      .find({}, '-__v')
+      .populate('owner', '-password -isActive -__v')
+      .limit(limit)
+      .skip(offset);
   }
 
   async findByID(id: string) {
@@ -90,7 +94,9 @@ export class PostService {
     const user = await this.userService.findById(id);
     if (!user) throw new BadRequestException(`User with id "${id}" not found`);
 
-    const post = await this.postModel.find({ owner: id });
+    const post = await this.postModel
+      .find({ owner: id })
+      .populate('owner', '-password -isActive -__v');
     return post;
   }
 
