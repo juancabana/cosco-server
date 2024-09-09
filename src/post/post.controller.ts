@@ -76,6 +76,15 @@ export class PostController {
     return this.postService.update(id, updatePostDto);
   }
 
+  @Get('favorite/:id')
+  @UseGuards(AuthGuard('jwt'))
+  findFavoritePosts(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @IsThatUser('id') user: User,
+  ) {
+    return this.postService.findFavoritePosts(id);
+  }
+
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
   remove(

@@ -110,12 +110,23 @@ export class UserService {
     return 'User Deleted';
   }
 
-  // async uploadFile(id: string, file: Express.Multer.File) {
-  //   const image = await this.cloudinaryService.uploadFile(file);
-  //   const newUser = await this.update(id, { image: image.secure_url });
+  async createFavoritePost({ idUser, idPost }) {
+    // Quiero agregarle a la propiedad favorites del usuario con id idUser el id del post idPost
+    // Y validar si el usuario existe o si el post existe
+    const user = await this.findById(idUser);
+    await this.postService.findByID(idPost);
 
-  //   return newUser;
-  // }
+    // Verificar si el post ya está en favoritos
+    if (user.favorites.includes(idPost)) {
+      throw new BadRequestException('Post already in favorites');
+    }
+
+    // Agregar el id del post a la propiedad favorites del usuario
+    user.favorites.push(idPost);
+    await user.save();
+
+    return 'Post added to favorites';
+  }
 
   private handleExceptions(error: any) {
     if (error.code === 11000) {

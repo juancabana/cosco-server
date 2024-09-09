@@ -120,6 +120,16 @@ export class PostService {
     }
   }
 
+  async findFavoritePosts(id: string) {
+    const user = await this.userService.findById(id);
+    if (!user) throw new BadRequestException(`User with id "${id}" not found`);
+
+    const post = await this.postModel
+      .find({ _id: { $in: user.favorites } })
+      .populate('owner', '-password -isActive -__v -favorites');
+    return post;
+  }
+
   async remove(id: string) {
     const post = await this.findByID(id);
     // const { deletedCount } = await this.postModel.deleteOne({ _id: id });

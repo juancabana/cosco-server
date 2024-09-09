@@ -75,6 +75,13 @@ export class User extends Document {
     default: ['CUSTOMER'],
   })
   roles: Role[];
+
+  @ApiProperty()
+  @Prop({
+    required: false,
+    default: [],
+  })
+  favorites: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

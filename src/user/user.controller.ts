@@ -45,6 +45,15 @@ export class UserController {
     return this.userService.findById(id);
   }
 
+  // Create favorite post
+  @Post('favorite/:idUser/:idPost')
+  async createFavorite(
+    @Param('idUser', ParseMongoIdPipe) idUser: string,
+    @Param('idPost', ParseMongoIdPipe) idPost: string,
+  ) {
+    return await this.userService.createFavoritePost({ idUser, idPost });
+  }
+
   // Update info User
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
@@ -55,21 +64,6 @@ export class UserController {
   ) {
     return this.userService.update(id, updateUserDto);
   }
-
-  // Update and upload image
-  // @Post('update-image/:id')
-  // @UseGuards(AuthGuard('jwt'))
-  // async uploadImage(
-  //   @Param('id', ParseMongoIdPipe) id: string,
-  //   @UploadedFile() file: Express.Multer.File,
-  //   @IsThatUser('id') user: User,
-  // ) {
-  //   console.log({ fileInController: file });
-  //   if (!file) {
-  //     throw new BadRequestException('Make sure that the file is an image');
-  //   }
-  //   return await this.userService.uploadFile(id, file);
-  // }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
