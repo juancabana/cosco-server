@@ -89,7 +89,7 @@ export class PostController {
   @UseGuards(AuthGuard('jwt'))
   remove(
     @Param('id', ParseMongoIdPipe) id: string,
-    @IsThatUser('id') user: User,
+    // @IsThatUser('id') user: User,
   ) {
     return this.postService.remove(id);
   }
