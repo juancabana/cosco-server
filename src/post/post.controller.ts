@@ -21,7 +21,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 import { IsThatUser } from 'src/auth/decorators/is-that-user.decorator';
 import { User } from 'src/user/entities/user.entity';
-import { type paginationDto } from 'src/common/dto/pagination.dto';
+import { type PaginationDto } from 'src/common/dto/pagination.dto';
 
 @ApiTags('Posts')
 @Controller('post')
@@ -44,7 +44,7 @@ export class PostController {
   }
 
   @Get()
-  async findAll(@Query() pagination: paginationDto) {
+  async findAll(@Query() pagination: { limit?: number; offset?: number }) {
     return await this.postService.findAll(pagination);
   }
 

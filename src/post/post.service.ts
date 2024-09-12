@@ -12,7 +12,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/user/user.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
-import { paginationDto } from '../common/dto/pagination.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 import { AwsService } from 'src/aws/aws.service';
 
 @Injectable()
@@ -75,13 +75,27 @@ export class PostService {
     }
   }
 
-  async findAll(paginationDto: paginationDto) {
+  async findAll(paginationDto: PaginationDto) {
     const { limit = 20, offset = 0 } = paginationDto;
-    return await this.postModel
-      .find({}, '-__v')
-      .populate('owner', '-password -isActive -__v')
-      .limit(limit)
-      .skip(offset);
+
+    const [posts, total] = await Promise.all([
+      this.postModel
+        .find({}, '-__v')
+        .populate('owner', '-password -isActive -__v')
+        .limit(limit)
+        .skip(offset)
+        .exec(),
+      this.postModel.countDocuments().exec(),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      posts,
+      total,
+      totalPages,
+      currentPage: Math.floor(offset / limit) + 1,
+    };
   }
 
   async findByID(id: string) {

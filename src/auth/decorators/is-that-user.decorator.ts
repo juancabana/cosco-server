@@ -13,7 +13,7 @@ export const IsThatUser = createParamDecorator(
     const user = req.user;
     const id = req.params[idReq];
 
-    console.log({ user, id });
+    // console.log({ user, id });
     if (!user)
       throw new InternalServerErrorException('User not found (Request)');
     if (user.id != id)
