@@ -44,7 +44,17 @@ export class PostController {
   }
 
   @Get()
-  async findAll(@Query() pagination: { limit?: number; offset?: number }) {
+  async findAll(
+    @Query()
+    pagination: {
+      limit?: number;
+      offset?: number;
+      category?: string;
+      department?: string;
+      city?: string;
+      title?: string;
+    },
+  ) {
     return await this.postService.findAll(pagination);
   }
 

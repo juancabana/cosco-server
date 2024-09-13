@@ -75,17 +75,39 @@ export class PostService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
-    const { limit = 20, offset = 0 } = paginationDto;
+  // async findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: {
+    limit?: number;
+    offset?: number;
+    category?: string;
+    department?: string;
+    city?: string;
+    title?: string;
+  }) {
+    const {
+      limit = 20,
+      offset = 0,
+      city,
+      department,
+      title,
+      category,
+    } = paginationDto;
+
+    const query = {
+      ...(city && { city }),
+      ...(department && { department }),
+      ...(title && { title: { $regex: title, $options: 'i' } }),
+      ...(category && { category }),
+    };
 
     const [posts, total] = await Promise.all([
       this.postModel
-        .find({}, '-__v')
+        .find(query, '-__v')
         .populate('owner', '-password -isActive -__v')
         .limit(limit)
         .skip(offset)
         .exec(),
-      this.postModel.countDocuments().exec(),
+      this.postModel.countDocuments(query).exec(),
     ]);
 
     const totalPages = Math.ceil(total / limit);
