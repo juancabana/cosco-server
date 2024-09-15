@@ -4,6 +4,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as bodyParser from 'body-parser';
 
+const port = process.env.PORT || 3000;
+console.log(
+  `Launching NestJS app on port ${port}, URL: http://0.0.0.0:${port}`,
+);
+
 async function main() {
   const app = await NestFactory.create(AppModule, {
     bodyParser: true,
@@ -37,6 +42,6 @@ async function main() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  await app.listen(3000);
+  await app.listen(port);
 }
 main();

@@ -12,7 +12,6 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/user/user.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
-import { PaginationDto } from '../common/dto/pagination.dto';
 import { AwsService } from 'src/aws/aws.service';
 
 @Injectable()
@@ -104,6 +103,7 @@ export class PostService {
       this.postModel
         .find(query, '-__v')
         .populate('owner', '-password -isActive -__v')
+        .sort({ createdAt: -1 })
         .limit(limit)
         .skip(offset)
         .exec(),
