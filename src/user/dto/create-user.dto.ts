@@ -1,12 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
-  IsAlpha,
   MaxLength,
   IsEmail,
   Matches,
   IsOptional,
-  IsUrl,
   MinLength,
   IsLowercase,
   IsIn,
@@ -15,9 +13,6 @@ import {
 export class CreateUserDto {
   @ApiProperty()
   @IsString()
-  @Matches(/^[a-zA-Z]+$/, {
-    message: 'firstName must contain only letters (a-zA-Z)',
-  })
   @MaxLength(15)
   @MinLength(1)
   firstName: string;
@@ -26,14 +21,10 @@ export class CreateUserDto {
   @IsString()
   @MaxLength(15)
   @IsOptional()
-  @Matches(/^[a-zA-Z]*$/, {
-    message: 'secondName must contain only letters (a-zA-Z)',
-  })
   secondName: string;
 
   @ApiProperty()
   @IsString()
-  @IsAlpha()
   @MaxLength(15)
   @MinLength(1)
   lastName: string;
@@ -42,9 +33,6 @@ export class CreateUserDto {
   @IsString()
   @MaxLength(15)
   @IsOptional()
-  @Matches(/^[a-zA-Z]*$/, {
-    message: 'secondLastName must contain only letters (a-zA-Z)',
-  })
   secondLastName: string;
 
   @ApiProperty()
