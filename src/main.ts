@@ -18,8 +18,8 @@ async function main() {
   app.setGlobalPrefix('api');
 
   // Limitar el tamaño de la carga útil a 1 MB
-  app.use(bodyParser.json({ limit: '1.5mb' }));
-  app.use(bodyParser.urlencoded({ limit: '1.5mb', extended: true }));
+  app.use(bodyParser.json({ limit: 'infinity' }));
+  app.use(bodyParser.urlencoded({ limit: 'infinity', extended: true }));
 
   app.useGlobalPipes(
     new ValidationPipe({

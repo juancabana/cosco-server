@@ -33,10 +33,6 @@ export class PostService {
           `You cannot associate the post to a user that does not exist`,
         );
 
-      // if (updateUserDto.image && typeof updateUserDto.image === 'string') {
-      // Numero random para evitar que la imagen se cachee
-
-      // Actualizar los datos del usuario
       const images = await Promise.all(
         createPostDto.images.map((image) => {
           const randomNumber = `${Math.random()}`;
@@ -47,27 +43,12 @@ export class PostService {
         }),
       );
 
-      // }
-
-      // const images = await Promise.all(
-      //   files.map((file) => this.awsService.uploadImage(file, id)),
-      // );
-      // if (!images) {
-      //   throw new BadRequestException('Error uploading image');
-      // }
-
       const newPost = await this.postModel.create({
         ...createPostDto,
         owner: id,
         images: images.map((image) => image.Location),
       });
 
-      // await this.notificationService.create({
-      //   idUser: id,
-      //   message: `Has publicado un nuevo producto`,
-      // });
-
-      // return newPost;
       return newPost;
     } catch (error) {
       this.handleExceptions(error);
