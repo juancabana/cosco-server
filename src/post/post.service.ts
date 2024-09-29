@@ -124,12 +124,44 @@ export class PostService {
   async update(id: string, updatePostDto: UpdatePostDto) {
     try {
       const post = await this.findByID(id);
-      await post.updateOne(post);
+      if (!post) {
+        throw new Error('Post not found');
+      }
 
-      await this.notificationService.create({
-        idUser: post.owner,
-        message: `Tu publicacion se ha actualizado correctamente`,
+      const rawImages = updatePostDto.images;
+
+      const localImages = rawImages.filter(
+        (image) => !image.includes('amazonaws'),
+      );
+
+      const awsImages = rawImages.filter((image) =>
+        image.includes('amazonaws'),
+      );
+
+      const images = await Promise.all(
+        localImages.map((image) => {
+          const randomNumber = `${Math.random()}`;
+          return this.awsService.uploadImage(
+            image,
+            `${post.owner}-profile-${randomNumber}`,
+          );
+        }),
+      );
+
+      // Update the post with the new data
+      Object.assign(post, {
+        ...updatePostDto,
+        images: [...awsImages, ...images.map((image) => image.Location)],
       });
+
+      // Save the updated post
+      await post.save();
+
+      // // Create a notification for the user
+      // await this.notificationService.create({
+      //   idUser: post.owner,
+      //   message: `Tu publicacion se ha actualizado correctamente`,
+      // });
 
       return { ...post.toJSON(), ...updatePostDto };
     } catch (error) {

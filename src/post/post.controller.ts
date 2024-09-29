@@ -81,7 +81,7 @@ export class PostController {
   update(
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() updatePostDto: UpdatePostDto,
-    @IsThatUser('id') user: User,
+    // @IsThatUser('id') user: User,
   ) {
     return this.postService.update(id, updatePostDto);
   }
