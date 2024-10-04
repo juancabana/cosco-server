@@ -118,7 +118,10 @@ export class UserService {
 
     // Verificar si el post ya está en favoritos
     if (user.favorites.includes(idPost)) {
-      throw new BadRequestException('Post already in favorites');
+      // Si está en favoritos, lo remuevo
+      user.favorites = user.favorites.filter((fav) => fav !== idPost);
+      await user.save();
+      return 'Post removed from favorites';
     }
 
     // Agregar el id del post a la propiedad favorites del usuario
